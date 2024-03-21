@@ -61,7 +61,9 @@ Some registrars support Easy DKIM, other's require you to set it up manually.
 
 It's important to set up the DKIM for your domain name, *and* both the SPF and MX records for your custom `MAIL FROM`
 domain, and to leave them in place for as long as you use SES. Failure to do so will result in SES ceasing to
-accept relays from you, or ceasing to send them with your custom MAIL FROM. 
+accept relays from you, or ceasing to send them with your custom MAIL FROM, which can cause delivery problems. 
+
+It can take some time for SES to scan your domain and find your DKIM records; take a break and go for a walk. 
 
 ## Step 5: Exit the sandbox
 AWS initially limits your account to 200 sends per day, and while that's probably enough, you should request that they
