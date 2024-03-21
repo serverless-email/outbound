@@ -54,7 +54,14 @@ In order to send mail for a domain, SES needs to know that you actually own that
 just sign up for an SES account and start spamming using anyone else's domain, and that would be unfortunate. 
 
 Verification is as simple as inserting some entries in your DNS, which is usually managed for you by the registrar
-you used when you created your domain. You can read about how to do that at the [helpful article AWS includes](https://docs.aws.amazon.com/console/ses/verified-identities/verify/domain) or you can see if AWS can do it for you with [EasyDKIM](https://docs.aws.amazon.com/console/ses/authentication/dkim/easy). 
+you used when you created your domain. You can read about how to do that at the 
+[helpful article AWS includes](https://docs.aws.amazon.com/console/ses/verified-identities/verify/domain) or you 
+can see if AWS can do it for you with [Easy DKIM](https://docs.aws.amazon.com/console/ses/authentication/dkim/easy). 
+Some registrars support Easy DKIM, other's require you to set it up manually. 
+
+It's important to set up the DKIM for your domain name, *and* both the SPF and MX records for your custom `MAIL FROM`
+domain, and to leave them in place for as long as you use SES. Failure to do so will result in SES ceasing to
+accept relays from you, or ceasing to send them with your custom MAIL FROM. 
 
 ## Step 5: Exit the sandbox
 AWS initially limits your account to 200 sends per day, and while that's probably enough, you should request that they
@@ -138,4 +145,6 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
 4. The fourth `Received` header shows the email going from Amazon SES
    being delivered to Microsoft
 
-Victory!
+If you see similar results (a `Received` header from SES and valid DKIM), then
+you're all set! You can use this indefinitely for (currently) $0.10 per thousand
+emails per month, and I've never had an email rejected by a recipient. 
