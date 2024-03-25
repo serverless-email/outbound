@@ -87,22 +87,24 @@ For your mail server to relay messages of SES, it needs to authenticate itself. 
 4. Copy the credentials into your password manager; you won't see them again (but you can create new ones)
 
 ## Step 8: Configure your SMTP mail server to use SES
-This step will vary depending on the mail server you currently use. I use postfix as a mail server, so for me this meant
+This step will vary depending on the mail server you currently use. Consult the documentation for your SMTP server
+(e.g., Exim, Stalwart, Postfix) for details. 
+
+I use postfix as a mail server, so for me this meant
 adding a line to `main.cf`:
 ```
-relayhost = [email-smtp.us-east-1.amazonaws.com]:587
+relayhost = [email-smtp.<region>.amazonaws.com]:587
 ```
-And creating a file with the AWS credentials:
+And creating a file with the AWS credentials (`sasl_passwd` for Postfix; this should be readable only by `root`):
 ```
-[email-smtp.us-east-1.amazonaws.com]:587 op://k8s/SES SMTP credentials/username:op://k8s/SES SMTP credentials/password
+[email-smtp.<region>.amazonaws.com]:587 <access_key_id>:<secret_access_key>
 ```
-
-(That's the actual file I keep on my desktop machine and in Git. When I deploy it, I use a script to inject the actual credentials from 
-my password manager.)
+Substitute the credentials you got in the previous step in this file. Substitute the region in which you created your
+identity. 
 
 ## Step 9: Test from your email client
-Now send a message to another account using your mail server. On the other machine, you can look at the "Received" headers and you should
-see some from SES at or near the top:
+Now send a message to another account using your mail server. On the other machine, you can look at 
+the `Received` headers and you should see some from SES at or near the top:
 ```
 Received: from CH3PR20MB7492.namprd20.prod.outlook.com (2603:10b6:610:1e5::6)
  by SA1PR20MB4442.namprd20.prod.outlook.com with HTTPS; Thu, 21 Mar 2024
