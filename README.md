@@ -65,19 +65,28 @@ accept relays from you, or ceasing to send them with your custom MAIL FROM, whic
 
 It can take some time for SES to scan your domain and find your DKIM records; take a break and go for a walk. 
 
-## Step 5: Exit the sandbox
+## Step 5: Test
+Once your identity is verified, open it in SES and click "Send Test Email." 
+* In the "From Address" enter your own email
+* In the "Scenario" dropdown, select "Custom"
+* In the "Custom recipient" section, enter an email address not in your domain (e.g., a Gmail address)
+* Fill in the subject and body, leave the "Configuration set" unset, and send.
+
+You should see the email show up on your Gmail account (or whatever service you use). Huzzah!
+
+## Step 6: Exit the sandbox
 AWS initially limits your account to 200 sends per day, and while that's probably enough, you should request that they
 [remove your account from the sandbox](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html). It's easy
 and takes your account limit to 50,000 per day and 14 per second, which is plenty enough for me. 
 
-## Step 6: Get SMTP credentials
+## Step 7: Get SMTP credentials
 For your mail server to relay messages of SES, it needs to authenticate itself. To do this,
 1. On the navigation bar on the left, select "SMTP Settings"
 2. Click the button "Create SMTP Credentials". This will create a new IAM user that can only send email.
 3. Give the user a name, and click "Create User"
 4. Copy the credentials into your password manager; you won't see them again (but you can create new ones)
 
-## Step 6: Configure your SMTP mail server to use SES
+## Step 8: Configure your SMTP mail server to use SES
 This step will vary depending on the mail server you currently use. I use postfix as a mail server, so for me this meant
 adding a line to `main.cf`:
 ```
@@ -91,7 +100,7 @@ And creating a file with the AWS credentials:
 (That's the actual file I keep on my desktop machine and in Git. When I deploy it, I use a script to inject the actual credentials from 
 my password manager.)
 
-## Step 7: Test
+## Step 9: Test from your email client
 Now send a message to another account using your mail server. On the other machine, you can look at the "Received" headers and you should
 see some from SES at or near the top:
 ```
